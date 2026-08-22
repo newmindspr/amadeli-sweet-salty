@@ -4,17 +4,17 @@ Sitio web oficial de Amadeli Sweet & Salty, pizzería y repostería en Loíza, P
 
 ## Estructura
 
-- `index.html`: contenido, SEO y datos estructurados.
-- `styles.css`: diseño responsive.
-- `script.js`: navegación, filtros, animaciones y galería.
-- `assets/images`: imágenes optimizadas para web.
+- `public/index.html`: contenido, SEO y datos estructurados.
+- `public/styles.css`: diseño responsive.
+- `public/script.js`: navegación, filtros, animaciones y galería.
+- `public/assets/images`: imágenes optimizadas para web.
+- `wrangler.jsonc`: configuración de Cloudflare Workers y sus recursos estáticos.
 
-## Publicación en Cloudflare Pages
+## Publicación automática en Cloudflare Workers
 
 - Rama de producción: `main`
-- Framework: ninguno
 - Comando de compilación: `exit 0`
-- Directorio de salida: `/`
+- Comando de despliegue: `npx wrangler deploy`
+- Directorio raíz: `/`
 
-Cada cambio enviado a `main` se publica automáticamente mediante la integración de GitHub con Cloudflare Pages.
-
+Cloudflare Workers Builds está conectado a GitHub. Cada cambio enviado a `main` activa automáticamente una nueva compilación y publicación, sin pasos manuales.
