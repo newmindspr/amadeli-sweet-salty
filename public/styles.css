@@ -250,7 +250,6 @@ select {
   height: auto;
   flex: 0 0 auto;
   filter:
-    drop-shadow(0 1px 0 rgba(255, 255, 255, 0.14))
     drop-shadow(0 9px 10px rgba(0, 0, 0, 0.38))
     drop-shadow(0 16px 24px rgba(0, 0, 0, 0.42))
     drop-shadow(0 0 20px rgba(237, 71, 122, 0.1));
@@ -2811,7 +2810,6 @@ select {
   height: auto;
   object-fit: contain;
   filter:
-    drop-shadow(0 1px 1px rgba(255, 235, 204, 0.16))
     drop-shadow(0 16px 22px rgba(0, 0, 0, 0.46));
 }
 
