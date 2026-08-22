@@ -146,6 +146,27 @@ navDialog?.addEventListener("cancel", (event) => {
   closeNavigation();
 });
 
+navDialog?.addEventListener("keydown", (event) => {
+  if (event.key !== "Tab" || !navDialog.open) return;
+
+  const focusable = [...navDialog.querySelectorAll("a[href], button:not([disabled]), [tabindex]:not([tabindex='-1'])")]
+    .filter((element) => element.getClientRects().length > 0);
+
+  if (!focusable.length) return;
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  const focusIsOutside = !navDialog.contains(document.activeElement);
+
+  if (event.shiftKey && (document.activeElement === first || focusIsOutside)) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && (document.activeElement === last || focusIsOutside)) {
+    event.preventDefault();
+    first.focus();
+  }
+});
+
 navDialog?.addEventListener("close", resetNavigationState);
 
 navDialog?.addEventListener("click", (event) => {
