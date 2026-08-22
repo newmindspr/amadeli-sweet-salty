@@ -76,6 +76,7 @@
     <header class="site-header" data-header>
       <div class="shell header-inner">
         <a class="brand" href="#inicio" aria-label="Amadeli Sweet & Salty, inicio">
+          <span class="brand-art" aria-hidden="true"><i></i><i></i><i></i></span>
           <img src="assets/images/logo-3d.webp" width="1600" height="582" fetchpriority="high" alt="Amadeli Sweet & Salty" />
         </a>
 
@@ -416,23 +417,25 @@
                 <div><span>01</span><h3>Pizzas</h3></div>
                 <p>Personal <b>6 pedazos</b> · Mediana <b>8</b> · Grande <b>12</b></p>
               </header>
-              <div class="pizza-table-wrap">
+              <p class="table-scroll-hint" id="pizza-scroll-hint"><span aria-hidden="true">↔</span> Desliza para ver todos los tamaños</p>
+              <div class="pizza-table-wrap" tabindex="0" role="region" aria-label="Tabla de precios de pizzas" aria-describedby="pizza-scroll-hint">
                 <table class="pizza-table">
+                  <caption class="sr-only">Precios de pizzas por especialidad y tamaño</caption>
                   <thead>
-                    <tr><th>Especialidad</th><th>Personal</th><th>Mediana</th><th>Grande</th></tr>
+                    <tr><th scope="col">Especialidad</th><th scope="col">Personal</th><th scope="col">Mediana</th><th scope="col">Grande</th></tr>
                   </thead>
                   <tbody>
-                    <tr><td><strong>Queso</strong></td><td>$7</td><td>$13</td><td>$17</td></tr>
-                    <tr><td><strong>Pepperoni</strong><small>Añade honey o spicy honey +$0.50</small></td><td>$8</td><td>$14</td><td>$18</td></tr>
-                    <tr><td><strong>Meat Lover</strong><small>Pepperoni, bacon, jamón, chorizo, salami y salchicha italiana</small></td><td>$10</td><td>$18</td><td>$24</td></tr>
-                    <tr><td><strong>Veggie Lover</strong><small>Pimiento, cebolla y setas</small></td><td>$9</td><td>$16</td><td>$22</td></tr>
-                    <tr><td><strong>Suprema</strong><small>Pepperoni, bacon, jamón, chorizo, salami, salchicha italiana, pimiento y cebolla</small></td><td>$11</td><td>$20</td><td>$28</td></tr>
-                    <tr><td><strong>Hawaiian</strong><small>Jamón y piña</small></td><td>$9</td><td>$16</td><td>$21</td></tr>
-                    <tr><td><strong>Pastelón</strong><small>Carne molida, queso crema y amarillos</small></td><td>$10</td><td>$18</td><td>$24</td></tr>
-                    <tr><td><strong>La Guayafrita</strong><small>Salsa blanca, salami, queso frito y salsa de guayaba</small></td><td>$10</td><td>$18</td><td>$24</td></tr>
-                    <tr><td><strong>Chicken Bacon Ranch</strong><small>Salsa blanca, tenders, bacon, cebolla lila y ranch</small></td><td>$10</td><td>$18</td><td>$24</td></tr>
-                    <tr><td><strong>Chicken Buffalo</strong><small>Salsa blanca, tenders, cebolla lila y buffalo</small></td><td>$10</td><td>$18</td><td>$24</td></tr>
-                    <tr><td><strong>Chicken BBQ</strong><small>Salsa blanca, pollo desmenuzado con BBQ y cebolla crujiente</small></td><td>$10</td><td>$18</td><td>$24</td></tr>
+                    <tr><th scope="row"><strong>Queso</strong></th><td>$7</td><td>$13</td><td>$17</td></tr>
+                    <tr><th scope="row"><strong>Pepperoni</strong><small>Añade honey o spicy honey +$0.50</small></th><td>$8</td><td>$14</td><td>$18</td></tr>
+                    <tr><th scope="row"><strong>Meat Lover</strong><small>Pepperoni, bacon, jamón, chorizo, salami y salchicha italiana</small></th><td>$10</td><td>$18</td><td>$24</td></tr>
+                    <tr><th scope="row"><strong>Veggie Lover</strong><small>Pimiento, cebolla y setas</small></th><td>$9</td><td>$16</td><td>$22</td></tr>
+                    <tr><th scope="row"><strong>Suprema</strong><small>Pepperoni, bacon, jamón, chorizo, salami, salchicha italiana, pimiento y cebolla</small></th><td>$11</td><td>$20</td><td>$28</td></tr>
+                    <tr><th scope="row"><strong>Hawaiian</strong><small>Jamón y piña</small></th><td>$9</td><td>$16</td><td>$21</td></tr>
+                    <tr><th scope="row"><strong>Pastelón</strong><small>Carne molida, queso crema y amarillos</small></th><td>$10</td><td>$18</td><td>$24</td></tr>
+                    <tr><th scope="row"><strong>La Guayafrita</strong><small>Salsa blanca, salami, queso frito y salsa de guayaba</small></th><td>$10</td><td>$18</td><td>$24</td></tr>
+                    <tr><th scope="row"><strong>Chicken Bacon Ranch</strong><small>Salsa blanca, tenders, bacon, cebolla lila y ranch</small></th><td>$10</td><td>$18</td><td>$24</td></tr>
+                    <tr><th scope="row"><strong>Chicken Buffalo</strong><small>Salsa blanca, tenders, cebolla lila y buffalo</small></th><td>$10</td><td>$18</td><td>$24</td></tr>
+                    <tr><th scope="row"><strong>Chicken BBQ</strong><small>Salsa blanca, pollo desmenuzado con BBQ y cebolla crujiente</small></th><td>$10</td><td>$18</td><td>$24</td></tr>
                   </tbody>
                 </table>
               </div>

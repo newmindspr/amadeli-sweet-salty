@@ -9,6 +9,7 @@ const lightbox = document.querySelector("[data-lightbox-dialog]");
 const lightboxImage = document.querySelector("[data-lightbox-image]");
 const lightboxClose = document.querySelector("[data-lightbox-close]");
 const cheeseSection = document.querySelector("[data-cheese-section]");
+const menuHeatSurfaces = document.querySelectorAll(".menu-panel");
 
 if (year) year.textContent = new Date().getFullYear();
 
@@ -206,6 +207,39 @@ filterButtons.forEach((button) => {
       const visible = selected === "all" || card.dataset.category === selected;
       card.classList.toggle("is-hidden", !visible);
     });
+  });
+});
+
+const finePointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+
+menuHeatSurfaces.forEach((surface) => {
+  let heatFrame = 0;
+  let heatX = -500;
+  let heatY = -500;
+
+  const renderHeat = () => {
+    heatFrame = 0;
+    surface.style.setProperty("--heat-x", `${heatX.toFixed(1)}px`);
+    surface.style.setProperty("--heat-y", `${heatY.toFixed(1)}px`);
+  };
+
+  surface.addEventListener("pointerenter", () => {
+    if (!finePointerQuery.matches || reduceMotionQuery.matches) return;
+    surface.style.setProperty("--heat-opacity", "1");
+  });
+
+  surface.addEventListener("pointermove", (event) => {
+    if (!finePointerQuery.matches || reduceMotionQuery.matches) return;
+    const bounds = surface.getBoundingClientRect();
+    heatX = event.clientX - bounds.left;
+    heatY = event.clientY - bounds.top;
+    if (!heatFrame) heatFrame = window.requestAnimationFrame(renderHeat);
+  });
+
+  surface.addEventListener("pointerleave", () => {
+    if (heatFrame) window.cancelAnimationFrame(heatFrame);
+    heatFrame = 0;
+    surface.style.setProperty("--heat-opacity", "0");
   });
 });
 
