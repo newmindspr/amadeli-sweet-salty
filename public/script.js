@@ -11,6 +11,29 @@ const lightboxClose = document.querySelector("[data-lightbox-close]");
 const cheeseSection = document.querySelector("[data-cheese-section]");
 const menuHeatSurfaces = document.querySelectorAll(".menu-panel");
 
+const dialogIsOpen = (dialog) => Boolean(dialog?.open || dialog?.hasAttribute("open"));
+
+const showDialog = (dialog) => {
+  if (!dialog) return false;
+  if (typeof dialog.showModal === "function") {
+    dialog.showModal();
+    return false;
+  } else {
+    dialog.setAttribute("open", "");
+    return true;
+  }
+};
+
+const hideDialog = (dialog) => {
+  if (!dialog) return;
+  if (typeof dialog.close === "function") {
+    dialog.close();
+  } else {
+    dialog.removeAttribute("open");
+    dialog.dispatchEvent(new Event("close"));
+  }
+};
+
 if (year) year.textContent = new Date().getFullYear();
 
 const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -77,6 +100,7 @@ const resetNavigationState = () => {
   navDialog?.classList.remove("is-active", "is-closing");
   setMenuButtonState(false);
   document.body.classList.remove("nav-open");
+  document.body.classList.remove("dialog-fallback-open");
   document.body.style.removeProperty("--nav-scrollbar-width");
 
   if (restoreMenuFocus && menuToggle) {
@@ -86,7 +110,7 @@ const resetNavigationState = () => {
 };
 
 const closeNavigation = ({ restoreFocus = true, immediate = false } = {}) => {
-  if (!navDialog?.open) {
+  if (!dialogIsOpen(navDialog)) {
     resetNavigationState();
     return;
   }
@@ -97,7 +121,7 @@ const closeNavigation = ({ restoreFocus = true, immediate = false } = {}) => {
 
   const finish = () => {
     navigationCloseTimer = 0;
-    if (navDialog.open) navDialog.close();
+    if (dialogIsOpen(navDialog)) hideDialog(navDialog);
   };
 
   if (immediate || reduceMotionQuery.matches) {
@@ -108,17 +132,18 @@ const closeNavigation = ({ restoreFocus = true, immediate = false } = {}) => {
 };
 
 const openNavigation = () => {
-  if (!navDialog || navDialog.open) return;
+  if (!navDialog || dialogIsOpen(navDialog)) return;
 
   window.clearTimeout(navigationCloseTimer);
   navigationCloseTimer = 0;
   restoreMenuFocus = false;
   navDialog.classList.remove("is-closing");
-  navDialog.showModal();
+  const usedDialogFallback = showDialog(navDialog);
   setMenuButtonState(true);
   const scrollbarWidth = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
   document.body.style.setProperty("--nav-scrollbar-width", `${scrollbarWidth}px`);
   document.body.classList.add("nav-open");
+  document.body.classList.toggle("dialog-fallback-open", usedDialogFallback);
   navDialog.getBoundingClientRect();
 
   window.requestAnimationFrame(() => {
@@ -128,7 +153,7 @@ const openNavigation = () => {
 };
 
 menuToggle?.addEventListener("click", () => {
-  if (navDialog?.open) {
+  if (dialogIsOpen(navDialog)) {
     closeNavigation();
   } else {
     openNavigation();
@@ -147,7 +172,7 @@ navDialog?.addEventListener("cancel", (event) => {
 });
 
 navDialog?.addEventListener("keydown", (event) => {
-  if (event.key !== "Tab" || !navDialog.open) return;
+  if (event.key !== "Tab" || !dialogIsOpen(navDialog)) return;
 
   const focusable = [...navDialog.querySelectorAll("a[href], button:not([disabled]), [tabindex]:not([tabindex='-1'])")]
     .filter((element) => element.getClientRects().length > 0);
@@ -180,6 +205,18 @@ navDialog?.addEventListener("click", (event) => {
     event.clientY > bounds.bottom;
 
   if (clickedOutside) closeNavigation();
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+
+  if (dialogIsOpen(navDialog) && typeof navDialog?.showModal !== "function") {
+    event.preventDefault();
+    closeNavigation();
+  } else if (dialogIsOpen(lightbox) && typeof lightbox?.showModal !== "function") {
+    event.preventDefault();
+    closeLightbox();
+  }
 });
 
 let cheeseFrame = 0;
@@ -272,18 +309,27 @@ document.querySelectorAll("[data-lightbox]").forEach((button) => {
     lightboxTrigger = button;
     lightboxImage.src = button.dataset.lightbox;
     lightboxImage.alt = button.querySelector("img")?.alt || "Foto del menú de Amadeli";
-    lightbox.showModal();
+    const usedDialogFallback = showDialog(lightbox);
+    document.body.classList.toggle("dialog-fallback-open", usedDialogFallback);
+    document.body.classList.toggle("lightbox-fallback-open", usedDialogFallback);
+    lightboxClose?.focus();
   });
 });
 
 const closeLightbox = () => {
   if (!lightbox) return;
-  lightbox.close();
+  hideDialog(lightbox);
+};
+
+const resetLightbox = () => {
   lightboxImage?.removeAttribute("src");
+  document.body.classList.remove("dialog-fallback-open", "lightbox-fallback-open");
   lightboxTrigger?.focus();
+  lightboxTrigger = null;
 };
 
 lightboxClose?.addEventListener("click", closeLightbox);
+lightbox?.addEventListener("close", resetLightbox);
 
 lightbox?.addEventListener("click", (event) => {
   const bounds = lightbox.getBoundingClientRect();
