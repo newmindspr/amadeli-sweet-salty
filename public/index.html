@@ -11,6 +11,7 @@
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <link rel="canonical" href="https://amadeli-sweet-salty.newmindspr.workers.dev/" />
     <link rel="icon" href="assets/images/favicon.png" type="image/png" />
+    <link rel="preload" href="assets/images/logo-3d.webp" as="image" type="image/webp" fetchpriority="high" />
     <link rel="preload" href="assets/images/hero-pizza.webp" as="image" type="image/webp" />
 
     <meta property="og:type" content="website" />
@@ -75,21 +76,10 @@
     <header class="site-header" data-header>
       <div class="shell header-inner">
         <a class="brand" href="#inicio" aria-label="Amadeli Sweet & Salty, inicio">
-          <img src="assets/images/logo-3d.webp" width="1600" height="582" alt="Amadeli Sweet & Salty" />
+          <img src="assets/images/logo-3d.webp" width="1600" height="582" fetchpriority="high" alt="Amadeli Sweet & Salty" />
         </a>
 
-        <button
-          class="menu-toggle"
-          type="button"
-          aria-expanded="false"
-          aria-controls="site-nav"
-          aria-label="Abrir menú"
-          data-menu-toggle
-        >
-          <span></span><span></span><span></span>
-        </button>
-
-        <nav class="site-nav" id="site-nav" aria-label="Navegación principal" data-nav>
+        <nav class="top-nav" aria-label="Navegación principal">
           <a href="#favoritos">Favoritos</a>
           <a href="#menu">Menú oficial</a>
           <a href="#postres">Postres</a>
@@ -98,6 +88,93 @@
         </nav>
       </div>
     </header>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      aria-haspopup="dialog"
+      aria-label="Abrir menú"
+      data-menu-toggle
+    >
+      <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+    </button>
+
+    <dialog
+      class="nav-drawer"
+      id="site-nav"
+      aria-labelledby="nav-drawer-title"
+      data-nav-dialog
+    >
+      <div class="nav-drawer-scroll">
+        <div class="nav-drawer-top">
+          <a class="drawer-brand" href="#inicio" aria-label="Amadeli Sweet & Salty, inicio">
+            <img src="assets/images/logo-3d.webp" width="1600" height="582" alt="" />
+          </a>
+          <button class="nav-close" type="button" aria-label="Cerrar menú" data-nav-close>×</button>
+        </div>
+
+        <div class="nav-drawer-intro">
+          <p><span></span>Pizzería &amp; repostería · Loíza</p>
+          <h2 id="nav-drawer-title">¿Qué se te <em>antoja?</em></h2>
+        </div>
+
+        <nav class="drawer-primary" aria-label="Secciones de la página">
+          <a href="#favoritos">
+            <span>01</span>
+            <strong>Favoritos</strong>
+            <small>Lo más pedido de la casa</small>
+            <i aria-hidden="true">↗</i>
+          </a>
+          <a href="#menu">
+            <span>02</span>
+            <strong>Menú oficial</strong>
+            <small>Platos, tamaños y precios</small>
+            <i aria-hidden="true">↗</i>
+          </a>
+          <a href="#postres">
+            <span>03</span>
+            <strong>Postres</strong>
+            <small>El lado más dulce de Amadeli</small>
+            <i aria-hidden="true">↗</i>
+          </a>
+          <a href="#visitanos">
+            <span>04</span>
+            <strong>Visítanos</strong>
+            <small>Carr. 187 · Loíza</small>
+            <i aria-hidden="true">↗</i>
+          </a>
+        </nav>
+
+        <div class="drawer-menu-groups">
+          <div class="drawer-section-title">
+            <span>Explora el menú</span>
+            <small>Directo a tu antojo</small>
+          </div>
+          <nav class="drawer-categories" aria-label="Categorías del menú oficial">
+            <a href="#menu-pizzas">Pizzas</a>
+            <a href="#menu-aperitivos">Aperitivos</a>
+            <a href="#menu-calzones">Calzones</a>
+            <a href="#menu-bebidas">Bebidas</a>
+            <a href="#menu-ofertas">Ofertas familiares</a>
+          </nav>
+        </div>
+
+        <div class="drawer-actions">
+          <a class="drawer-order" href="tel:+17878762948">
+            <span>Ordenar ahora</span>
+            <strong>787-876-2948</strong>
+          </a>
+          <a
+            class="drawer-delivery"
+            href="https://www.doordash.com/store/amadeli-sweet-%26-salty-loiza-35379823/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >DoorDash <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </dialog>
 
     <main id="contenido">
       <section class="hero" id="inicio">
@@ -154,7 +231,7 @@
               />
               <figcaption>Siempre hay espacio para el postre.</figcaption>
             </figure>
-            <div class="review-float" aria-label="Calificación de 4.9 de 5 en DoorDash">
+            <div class="review-float" role="img" aria-label="Calificación de 4.9 de 5 en DoorDash">
               <span class="stars" aria-hidden="true">★★★★★</span>
               <strong>4.9</strong>
               <small>en DoorDash</small>
@@ -301,10 +378,10 @@
             <div class="cheese-stage" aria-hidden="true">
               <span class="cheese-heat"></span>
               <div class="cheese-slice" data-cheese-slice>
-                <img src="assets/images/cheese-pull.webp" width="900" height="1599" alt="" />
+                <img src="assets/images/cheese-pull.webp" width="900" height="1599" loading="lazy" decoding="async" alt="" />
               </div>
               <div class="pizza-base">
-                <img src="assets/images/hero-pizza.webp" width="1206" height="1206" alt="" />
+                <img src="assets/images/hero-pizza.webp" width="1206" height="1206" loading="lazy" decoding="async" alt="" />
               </div>
               <span class="cheese-caption">recién salida del horno</span>
             </div>
@@ -446,7 +523,7 @@
           </div>
         </div>
 
-        <div class="shell dessert-gallery reveal" aria-label="Galería de postres">
+        <div class="shell dessert-gallery reveal" role="group" aria-label="Galería de postres">
           <button class="dessert-card dessert-card-tall" type="button" data-lightbox="assets/images/postre-helados.webp">
             <img src="assets/images/postre-helados.webp" width="959" height="1200" loading="lazy" alt="Tres helados con crema y toppings" />
             <span><small>Pa'l calor</small>Helados</span>
@@ -543,17 +620,28 @@
       <div class="shell footer-bottom">
         <span>© <span data-year></span> Amadeli Sweet &amp; Salty</span>
         <span>Loíza, Puerto Rico</span>
+        <a
+          class="new-minds-credit"
+          href="https://newmindspr.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Designed and Powered by New Minds Labs; abre en una pestaña nueva"
+        >
+          <small>Designed &amp; Powered by</small>
+          <strong>New Minds Labs</strong>
+          <i aria-hidden="true">↗</i>
+        </a>
       </div>
     </footer>
 
-    <div class="mobile-order" aria-label="Acciones para ordenar">
+    <div class="mobile-order" role="group" aria-label="Acciones para ordenar">
       <a href="tel:+17878762948">Llamar</a>
       <a href="https://www.doordash.com/store/amadeli-sweet-%26-salty-loiza-35379823/" target="_blank" rel="noopener">Ordenar</a>
     </div>
 
     <dialog class="lightbox" data-lightbox-dialog aria-label="Vista ampliada">
       <button type="button" class="lightbox-close" data-lightbox-close aria-label="Cerrar imagen">×</button>
-      <img alt="" width="1200" height="1200" data-lightbox-image />
+      <img src="assets/images/menu-oficial.webp" alt="" width="1200" height="1200" loading="lazy" data-lightbox-image />
     </dialog>
 
     <script src="script.js" defer></script>

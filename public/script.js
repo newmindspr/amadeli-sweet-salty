@@ -1,6 +1,7 @@
 const header = document.querySelector("[data-header]");
 const menuToggle = document.querySelector("[data-menu-toggle]");
-const nav = document.querySelector("[data-nav]");
+const navDialog = document.querySelector("[data-nav-dialog]");
+const navClose = document.querySelector("[data-nav-close]");
 const year = document.querySelector("[data-year]");
 const filterButtons = document.querySelectorAll("[data-filter]");
 const menuCards = document.querySelectorAll("[data-category]");
@@ -11,33 +12,152 @@ const cheeseSection = document.querySelector("[data-cheese-section]");
 
 if (year) year.textContent = new Date().getFullYear();
 
+const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+const HEADER_HIDE_AT = 112;
+const HEADER_SHOW_AT = 56;
+let headerCompact = false;
+let headerFrame = 0;
+
+const setHeaderCompact = (compact) => {
+  if (headerCompact === compact) return;
+  headerCompact = compact;
+
+  const focusWasInHeader = compact && Boolean(header?.contains(document.activeElement));
+  const shouldMoveFocusToHeader =
+    !compact && window.innerWidth > 980 && document.activeElement === menuToggle;
+
+  header?.classList.toggle("is-hidden", compact);
+  document.body.classList.toggle("header-compact", compact);
+
+  if (!header) return;
+
+  header.inert = compact;
+  if (compact) {
+    header.setAttribute("aria-hidden", "true");
+    if (focusWasInHeader) {
+      menuToggle?.focus({ preventScroll: true });
+    }
+  } else {
+    header.removeAttribute("aria-hidden");
+    if (shouldMoveFocusToHeader) {
+      header.querySelector(".brand")?.focus({ preventScroll: true });
+    }
+  }
+};
+
 const syncHeader = () => {
-  header?.classList.toggle("is-scrolled", window.scrollY > 20);
+  headerFrame = 0;
+  const threshold = headerCompact ? HEADER_SHOW_AT : HEADER_HIDE_AT;
+  setHeaderCompact(window.scrollY > threshold);
+};
+
+const requestHeaderUpdate = () => {
+  if (headerFrame) return;
+  headerFrame = window.requestAnimationFrame(syncHeader);
 };
 
 syncHeader();
-window.addEventListener("scroll", syncHeader, { passive: true });
+window.addEventListener("scroll", requestHeaderUpdate, { passive: true });
+window.addEventListener("resize", requestHeaderUpdate);
+window.addEventListener("pageshow", requestHeaderUpdate);
 
-const closeNavigation = () => {
-  if (!menuToggle || !nav) return;
-  menuToggle.setAttribute("aria-expanded", "false");
-  menuToggle.setAttribute("aria-label", "Abrir menú");
-  nav.classList.remove("is-open");
+let navigationCloseTimer = 0;
+let restoreMenuFocus = false;
+
+const setMenuButtonState = (open) => {
+  if (!menuToggle) return;
+  menuToggle.setAttribute("aria-expanded", String(open));
+  menuToggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+};
+
+const resetNavigationState = () => {
+  window.clearTimeout(navigationCloseTimer);
+  navigationCloseTimer = 0;
+  navDialog?.classList.remove("is-active", "is-closing");
+  setMenuButtonState(false);
   document.body.classList.remove("nav-open");
+  document.body.style.removeProperty("--nav-scrollbar-width");
+
+  if (restoreMenuFocus && menuToggle) {
+    menuToggle.focus({ preventScroll: true });
+  }
+  restoreMenuFocus = false;
+};
+
+const closeNavigation = ({ restoreFocus = true, immediate = false } = {}) => {
+  if (!navDialog?.open) {
+    resetNavigationState();
+    return;
+  }
+
+  restoreMenuFocus = restoreFocus;
+  navDialog.classList.remove("is-active");
+  navDialog.classList.add("is-closing");
+
+  const finish = () => {
+    navigationCloseTimer = 0;
+    if (navDialog.open) navDialog.close();
+  };
+
+  if (immediate || reduceMotionQuery.matches) {
+    finish();
+  } else {
+    navigationCloseTimer = window.setTimeout(finish, 480);
+  }
+};
+
+const openNavigation = () => {
+  if (!navDialog || navDialog.open) return;
+
+  window.clearTimeout(navigationCloseTimer);
+  navigationCloseTimer = 0;
+  restoreMenuFocus = false;
+  navDialog.classList.remove("is-closing");
+  navDialog.showModal();
+  setMenuButtonState(true);
+  const scrollbarWidth = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
+  document.body.style.setProperty("--nav-scrollbar-width", `${scrollbarWidth}px`);
+  document.body.classList.add("nav-open");
+  navDialog.getBoundingClientRect();
+
+  window.requestAnimationFrame(() => {
+    navDialog.classList.add("is-active");
+    navClose?.focus({ preventScroll: true });
+  });
 };
 
 menuToggle?.addEventListener("click", () => {
-  const willOpen = menuToggle.getAttribute("aria-expanded") !== "true";
-  menuToggle.setAttribute("aria-expanded", String(willOpen));
-  menuToggle.setAttribute("aria-label", willOpen ? "Cerrar menú" : "Abrir menú");
-  nav?.classList.toggle("is-open", willOpen);
-  document.body.classList.toggle("nav-open", willOpen);
+  if (navDialog?.open) {
+    closeNavigation();
+  } else {
+    openNavigation();
+  }
 });
 
-nav?.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeNavigation));
+navClose?.addEventListener("click", () => closeNavigation());
 
-window.addEventListener("resize", () => {
-  if (window.innerWidth > 760) closeNavigation();
+navDialog?.querySelectorAll("a").forEach((link) => {
+  link.addEventListener("click", () => closeNavigation({ restoreFocus: false, immediate: true }));
+});
+
+navDialog?.addEventListener("cancel", (event) => {
+  event.preventDefault();
+  closeNavigation();
+});
+
+navDialog?.addEventListener("close", resetNavigationState);
+
+navDialog?.addEventListener("click", (event) => {
+  if (event.target !== navDialog) return;
+
+  const bounds = navDialog.getBoundingClientRect();
+  const clickedOutside =
+    event.clientX < bounds.left ||
+    event.clientX > bounds.right ||
+    event.clientY < bounds.top ||
+    event.clientY > bounds.bottom;
+
+  if (clickedOutside) closeNavigation();
 });
 
 let cheeseFrame = 0;
