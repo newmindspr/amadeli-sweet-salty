@@ -7,6 +7,7 @@ const menuCards = document.querySelectorAll("[data-category]");
 const lightbox = document.querySelector("[data-lightbox-dialog]");
 const lightboxImage = document.querySelector("[data-lightbox-image]");
 const lightboxClose = document.querySelector("[data-lightbox-close]");
+const cheeseSection = document.querySelector("[data-cheese-section]");
 
 if (year) year.textContent = new Date().getFullYear();
 
@@ -38,6 +39,38 @@ nav?.querySelectorAll("a").forEach((link) => link.addEventListener("click", clos
 window.addEventListener("resize", () => {
   if (window.innerWidth > 760) closeNavigation();
 });
+
+let cheeseFrame = 0;
+
+const updateCheesePull = () => {
+  cheeseFrame = 0;
+  if (!cheeseSection) return;
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const bounds = cheeseSection.getBoundingClientRect();
+  const travel = Math.max(bounds.height - window.innerHeight, 1);
+  const progress = reduceMotion
+    ? 1
+    : Math.min(1, Math.max(0, -bounds.top / travel));
+  const compact = window.innerWidth <= 760;
+  const startLift = compact ? 45 : 80;
+  const endLift = compact ? -80 : -145;
+  const lift = startLift + (endLift - startLift) * progress;
+  const stretch = 0.88 + progress * (compact ? 0.14 : 0.19);
+
+  cheeseSection.style.setProperty("--cheese-lift", `${lift.toFixed(1)}px`);
+  cheeseSection.style.setProperty("--cheese-stretch", stretch.toFixed(3));
+  cheeseSection.style.setProperty("--cheese-progress", `${(progress * 100).toFixed(1)}%`);
+};
+
+const requestCheeseUpdate = () => {
+  if (cheeseFrame) return;
+  cheeseFrame = window.requestAnimationFrame(updateCheesePull);
+};
+
+updateCheesePull();
+window.addEventListener("scroll", requestCheeseUpdate, { passive: true });
+window.addEventListener("resize", requestCheeseUpdate);
 
 filterButtons.forEach((button) => {
   button.addEventListener("click", () => {

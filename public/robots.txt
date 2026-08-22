@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://amadeli-sweet-salty.pages.dev/sitemap.xml
-
+Sitemap: https://amadeli-sweet-salty.newmindspr.workers.dev/sitemap.xml
