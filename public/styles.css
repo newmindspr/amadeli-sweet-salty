@@ -1795,7 +1795,7 @@ select {
   }
 
   .header-inner {
-    min-height: 78px;
+    min-height: 90px;
     gap: 12px;
   }
 
@@ -1814,7 +1814,7 @@ select {
 
   .site-nav {
     position: fixed;
-    top: 78px;
+    top: 90px;
     right: 14px;
     left: 14px;
     display: grid;
@@ -1850,7 +1850,7 @@ select {
   }
 
   .hero-grid {
-    padding-top: 125px;
+    padding-top: 136px;
     padding-bottom: 68px;
     gap: 48px;
   }
